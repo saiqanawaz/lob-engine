@@ -94,6 +94,21 @@ BTCUSDT data: information coefficients and OBI-decile conditional returns at
 statistical caveats spelled out. Reproduce with
 `pip install ".[research,ingest]"`, a fresh capture, and `jupyter`.
 
+## Web demo (WASM)
+
+`web/` is a static site where the *same* C++ engine runs in the browser,
+compiled to a single-file WebAssembly module with Emscripten — no TypeScript
+port, no framework, no build step. Live ladder, synthetic flow player, manual
+order entry, trade tape, and depth chart.
+
+```bash
+bash web/wasm/build.sh                       # rebuild web/js/lob-engine.js (needs em++)
+python -m http.server 8123 --directory web   # then open http://localhost:8123
+```
+
+The built module is committed, so the site deploys as-is to any static host
+(GitHub Pages, Cloudflare Pages, Netlify).
+
 ## Layout
 
 ```

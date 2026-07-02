@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>lob-engine — a C++ limit order book, live in your browser</title>
+  <meta name="description" content="Price-time priority matching engine in C++20, compiled to WebAssembly. The demo runs the real engine.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="orb orb-a"></div>
+  <div class="orb orb-b"></div>
+  <div class="orb orb-c"></div>
+
+  <header class="nav">
+    <div class="wordmark">lob<span>-engine</span></div>
+    <a class="btn ghost" href="https://github.com/saiqanawaz/lob-engine" target="_blank" rel="noopener">GitHub&nbsp;&nearr;</a>
+  </header>
+
+  <main>
+    <section class="hero">
+      <p class="eyebrow">C++20 &middot; WebAssembly &middot; price&ndash;time priority</p>
+      <h1>A limit order book engine,<br><em>live in your browser.</em></h1>
+      <p class="sub">
+        The ladder below isn't a mock of the engine — it <strong>is</strong> the engine.
+        The same C++ that clocks ~14M&nbsp;ops/s natively, compiled to WebAssembly.
+        No frameworks, no server, one 100&nbsp;KB module.
+      </p>
+      <div class="chips">
+        <div class="chip"><b>14M</b><span>ops/s mixed flow</span></div>
+        <div class="chip"><b>80&nbsp;ns</b><span>p50 latency</span></div>
+        <div class="chip"><b>O(1)</b><span>cancels</span></div>
+        <div class="chip"><b>65</b><span>tests, CI green</span></div>
+      </div>
+    </section>
+
+    <section class="demo">
+      <div class="demo-grid">
+        <div class="glass card book-card">
+          <div class="card-head">
+            <h2>Order book</h2>
+            <div class="quote-line mono" id="quoteLine">&ndash;</div>
+          </div>
+          <div class="ladder-head mono"><span>price</span><span>size</span><span>orders</span></div>
+          <div class="ladder" id="ladder"></div>
+        </div>
+
+        <div class="demo-side">
+          <div class="glass card controls-card">
+            <div class="card-head">
+              <h2>Synthetic flow</h2>
+              <div class="flow-buttons">
+                <button class="btn small" id="playBtn">Pause</button>
+                <button class="btn small ghost" id="resetBtn">Reset</button>
+              </div>
+            </div>
+            <label class="slider-label">
+              <span>speed</span>
+              <input type="range" id="speed" min="20" max="2000" step="20" value="300">
+              <span class="mono" id="speedVal">300 ops/s</span>
+            </label>
+            <div class="stat-row mono" id="statRow"></div>
+
+            <div class="divider"></div>
+
+            <h3>Submit an order</h3>
+            <form id="orderForm" autocomplete="off">
+              <div class="seg" id="sideSeg">
+                <button type="button" class="seg-btn active" data-side="buy">Buy</button>
+                <button type="button" class="seg-btn" data-side="sell">Sell</button>
+              </div>
+              <div class="form-row">
+                <select id="ordType">
+                  <option value="limit">Limit</option>
+                  <option value="market">Market</option>
+                </select>
+                <select id="ordTif">
+                  <option value="gtc">GTC</option>
+                  <option value="ioc">IOC</option>
+                  <option value="fok">FOK</option>
+                </select>
+              </div>
+              <div class="form-row">
+                <input type="number" id="ordPrice" step="0.01" placeholder="price">
+                <input type="number" id="ordQty" min="1" value="250" placeholder="qty">
+              </div>
+              <button class="btn wide" type="submit">Send order</button>
+              <div class="feedback mono" id="feedback">&nbsp;</div>
+            </form>
+          </div>
+
+          <div class="glass card tape-card">
+            <div class="card-head"><h2>Trades</h2><span class="muted mono" id="tapeCount"></span></div>
+            <ul class="tape mono" id="tape"></ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="glass card depth-card">
+        <div class="card-head"><h2>Depth</h2><span class="muted">cumulative resting size, 40 levels per side</span></div>
+        <canvas id="depthChart" height="180"></canvas>
+      </div>
+    </section>
+
+    <section class="arch">
+      <h2 class="section-title">Architecture</h2>
+      <div class="layers">
+        <div class="glass layer">
+          <span class="layer-n mono">01</span>
+          <div><h3>Data ingestion</h3><p>Binance WebSocket depth + trades to raw-fidelity JSONL; synthetic Poisson flow generator for tests and demos.</p></div>
+          <div class="tags"><span>websockets</span><span>JSONL</span></div>
+        </div>
+        <div class="glass layer">
+          <span class="layer-n mono">02</span>
+          <div><h3>Matching engine &mdash; C++20</h3><p>Price&ndash;time priority book: <code>std::map</code> levels, intrusive FIFO queues, pooled nodes, O(1) cancels. Limit/market, GTC/IOC/FOK, self-trade prevention, exchange-standard amends.</p></div>
+          <div class="tags"><span>Catch2 &times;33</span><span>Google Benchmark</span></div>
+        </div>
+        <div class="glass layer">
+          <span class="layer-n mono">03</span>
+          <div><h3>Analytics &amp; research</h3><p>L2 book-sync replay through the engine; OBI, microprice, CVD; Sharpe/Sortino/drawdown tearsheets; research notebook.</p></div>
+          <div class="tags"><span>pandas</span><span>jupyter</span></div>
+        </div>
+        <div class="glass layer">
+          <span class="layer-n mono">04</span>
+          <div><h3>Python SDK</h3><p><code>pip install .</code> compiles the C++ core via scikit-build-core and pybind11; typed keyword API, 32 binding tests.</p></div>
+          <div class="tags"><span>pybind11</span><span>scikit-build-core</span></div>
+        </div>
+        <div class="glass layer">
+          <span class="layer-n mono">05</span>
+          <div><h3>This page</h3><p>The identical engine compiled to WebAssembly with Emscripten. Static HTML/CSS/JS &mdash; no framework, no build step, no server.</p></div>
+          <div class="tags"><span>WASM</span><span>embind</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="research">
+      <h2 class="section-title">Measured, not claimed</h2>
+      <div class="research-grid">
+        <div class="glass card">
+          <div class="card-head"><h2>OBI predicts the next tick</h2></div>
+          <p class="muted">Spearman IC between order-book imbalance and forward mid returns, live BTCUSDT capture replayed through the engine (5,087 snapshots, zero sync gaps):</p>
+          <div class="ic-row mono">
+            <div class="ic"><b>0.57</b><span>1s</span></div>
+            <div class="ic"><b>0.54</b><span>5s</span></div>
+            <div class="ic"><b>0.45</b><span>10s</span></div>
+          </div>
+          <p class="footnote">Top-minus-bottom decile: +2.65 bps over 5s &mdash; clears the half-spread, loses to taker fees. A microstructure observation, honestly framed, not a strategy. Full caveats in the notebook.</p>
+        </div>
+        <div class="glass card">
+          <div class="card-head"><h2>Engine benchmarks</h2></div>
+          <table class="bench mono">
+            <tr><td>mixed flow (55/35/10)</td><td>~14M ops/s</td></tr>
+            <tr><td>cancels</td><td>up to 42M ops/s</td></tr>
+            <tr><td>latency p50</td><td>80 ns</td></tr>
+            <tr><td>latency p99</td><td>374 ns</td></tr>
+            <tr><td>latency p99.9</td><td>1.5 &micro;s</td></tr>
+          </table>
+          <p class="footnote">Single thread, GCC 13 -O2, WSL2. Tail max ~1.4 ms is OS scheduler jitter on a non-isolated core &mdash; reported, not hidden.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <span>lob-engine &mdash; C++20 &middot; pybind11 &middot; WebAssembly</span>
+    <a href="https://github.com/saiqanawaz/lob-engine" target="_blank" rel="noopener">source</a>
+  </footer>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
