@@ -1,0 +1,8 @@
+build/
+build-*/
+.git/
+.cache/
+__pycache__/
+*.pyc
+.venv/
+benchmarks/results/

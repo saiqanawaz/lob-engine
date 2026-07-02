@@ -1,0 +1,46 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install build tools
+        run: sudo apt-get update && sudo apt-get install -y ninja-build
+
+      - name: Configure
+        run: cmake -S . -B build -G Ninja -DLOB_BUILD_PYTHON=OFF
+
+      - name: Build
+        run: cmake --build build
+
+      - name: C++ tests
+        run: ctest --test-dir build --output-on-failure
+
+      - name: Benchmark smoke run
+        run: ./build/benchmarks/lob_bench --benchmark_min_time=0.01s
+
+      - name: Install Python package
+        run: |
+          python -m pip install --upgrade pip
+          pip install ".[test]"
+
+      - name: Python tests
+        run: pytest python/tests -q
+
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build image
+        run: docker build -t lob-engine .
+
+      - name: Smoke test image
+        run: docker run --rm lob-engine
