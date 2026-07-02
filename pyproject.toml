@@ -13,7 +13,8 @@ authors = [{ name = "Saiqa Nawaz", email = "snawaz3@asu.edu" }]
 keywords = ["limit-order-book", "matching-engine", "market-microstructure", "hft"]
 
 [project.optional-dependencies]
-test = ["pytest>=7"]
+analytics = ["numpy>=1.24"]
+test = ["pytest>=7", "numpy>=1.24"]
 
 [tool.scikit-build]
 minimum-version = "0.9"
