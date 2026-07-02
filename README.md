@@ -85,6 +85,15 @@ level. Trades are not matched through the book — depth diffs are already
 post-trade state — they drive CVD instead. A 30s BTCUSDT sample lives in
 `data/btcusdt_sample.jsonl`.
 
+## Research
+
+[`notebooks/obi_forward_returns.ipynb`](notebooks/obi_forward_returns.ipynb)
+asks whether order-book imbalance predicts short-horizon mid returns in live
+BTCUSDT data: information coefficients and OBI-decile conditional returns at
+1s/5s/10s horizons, with the signal measured against the half-spread and the
+statistical caveats spelled out. Reproduce with
+`pip install ".[research,ingest]"`, a fresh capture, and `jupyter`.
+
 ## Layout
 
 ```
