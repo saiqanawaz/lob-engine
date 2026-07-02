@@ -57,6 +57,34 @@ bids, asks = eng.depth()             # aggregated book, best first
 
 Run the binding tests with `pip install .[test] && pytest`.
 
+## Data ingestion and L2 replay
+
+Record live Binance depth diffs + trades (public market-data endpoints, no
+API key; use `--us` for Binance.US):
+
+```bash
+pip install ".[ingest]"
+python -m lob.ingest.binance --symbol btcusdt --duration 60 --out btc.jsonl
+```
+
+Replay a capture through the engine and compute signals (mid, spread,
+microprice, OBI, CVD from the aggressor flag):
+
+```python
+from lob.ingest import read_jsonl, replay_l2
+
+res = replay_l2(read_jsonl("btc.jsonl"), tick_size=0.01, qty_step=1e-5)
+res.records[-1]          # per-event signal rows
+res.stats                # sync quality: stale drops, gaps, crossed adds
+```
+
+Binance publishes L2 (aggregate levels), not L3 (individual orders), so the
+replayer follows the documented Binance sync algorithm (snapshot bracketing,
+update-id contiguity) and maintains one synthetic resting order per price
+level. Trades are not matched through the book — depth diffs are already
+post-trade state — they drive CVD instead. A 30s BTCUSDT sample lives in
+`data/btcusdt_sample.jsonl`.
+
 ## Layout
 
 ```
