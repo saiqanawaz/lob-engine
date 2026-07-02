@@ -39,7 +39,7 @@ let tradeCount = 0;
 let tradedQty = 0;
 let tape = [];
 let running = true;
-let speed = 300;
+let speed = 120;
 let manualSide = "buy";
 
 function reset() {
@@ -181,8 +181,8 @@ function drawDepth() {
     ctx.fillStyle = fill;
     ctx.fill();
   };
-  drawSide(bidPts, "rgba(63,214,154,0.9)", "rgba(63,214,154,0.10)");
-  drawSide(askPts, "rgba(255,122,143,0.9)", "rgba(255,122,143,0.10)");
+  drawSide(bidPts, "rgba(13,157,109,0.9)", "rgba(13,157,109,0.12)");
+  drawSide(askPts, "rgba(222,69,96,0.9)", "rgba(222,69,96,0.12)");
 }
 
 // ── controls ─────────────────────────────────────────────────────────
@@ -237,10 +237,11 @@ $("orderForm").addEventListener("submit", (e) => {
 // ── main loop ────────────────────────────────────────────────────────
 reset();
 $("ordPrice").value = (mid * TICK).toFixed(2);
+// One visible update per second: humans watch the book, the engine
+// still chews through `speed` operations per tick.
 setInterval(() => {
   if (running) {
-    const batch = Math.max(1, Math.round(speed / 10));
-    for (let i = 0; i < batch; i++) step();
+    for (let i = 0; i < speed; i++) step();
     render();
   }
-}, 100);
+}, 1000);

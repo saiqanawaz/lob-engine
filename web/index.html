@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/style.css?v=2">
 </head>
 <body>
   <div class="orb orb-a"></div>
@@ -59,8 +59,8 @@
             </div>
             <label class="slider-label">
               <span>speed</span>
-              <input type="range" id="speed" min="20" max="2000" step="20" value="300">
-              <span class="mono" id="speedVal">300 ops/s</span>
+              <input type="range" id="speed" min="10" max="1000" step="10" value="120">
+              <span class="mono" id="speedVal">120 ops/s</span>
             </label>
             <div class="stat-row mono" id="statRow"></div>
 
@@ -105,37 +105,6 @@
       </div>
     </section>
 
-    <section class="arch">
-      <h2 class="section-title">Architecture</h2>
-      <div class="layers">
-        <div class="glass layer">
-          <span class="layer-n mono">01</span>
-          <div><h3>Data ingestion</h3><p>Binance WebSocket depth + trades to raw-fidelity JSONL; synthetic Poisson flow generator for tests and demos.</p></div>
-          <div class="tags"><span>websockets</span><span>JSONL</span></div>
-        </div>
-        <div class="glass layer">
-          <span class="layer-n mono">02</span>
-          <div><h3>Matching engine &mdash; C++20</h3><p>Price&ndash;time priority book: <code>std::map</code> levels, intrusive FIFO queues, pooled nodes, O(1) cancels. Limit/market, GTC/IOC/FOK, self-trade prevention, exchange-standard amends.</p></div>
-          <div class="tags"><span>Catch2 &times;33</span><span>Google Benchmark</span></div>
-        </div>
-        <div class="glass layer">
-          <span class="layer-n mono">03</span>
-          <div><h3>Analytics &amp; research</h3><p>L2 book-sync replay through the engine; OBI, microprice, CVD; Sharpe/Sortino/drawdown tearsheets; research notebook.</p></div>
-          <div class="tags"><span>pandas</span><span>jupyter</span></div>
-        </div>
-        <div class="glass layer">
-          <span class="layer-n mono">04</span>
-          <div><h3>Python SDK</h3><p><code>pip install .</code> compiles the C++ core via scikit-build-core and pybind11; typed keyword API, 32 binding tests.</p></div>
-          <div class="tags"><span>pybind11</span><span>scikit-build-core</span></div>
-        </div>
-        <div class="glass layer">
-          <span class="layer-n mono">05</span>
-          <div><h3>This page</h3><p>The identical engine compiled to WebAssembly with Emscripten. Static HTML/CSS/JS &mdash; no framework, no build step, no server.</p></div>
-          <div class="tags"><span>WASM</span><span>embind</span></div>
-        </div>
-      </div>
-    </section>
-
     <section class="research">
       <h2 class="section-title">Measured, not claimed</h2>
       <div class="research-grid">
@@ -169,6 +138,6 @@
     <a href="https://github.com/saiqanawaz/lob-engine" target="_blank" rel="noopener">source</a>
   </footer>
 
-  <script type="module" src="js/app.js"></script>
+  <script type="module" src="js/app.js?v=2"></script>
 </body>
 </html>
