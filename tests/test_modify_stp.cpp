@@ -117,7 +117,7 @@ TEST_CASE("STP CancelIncoming cancels the incoming remainder", "[stp]") {
 
 TEST_CASE("FOK feasibility ignores own liquidity under CancelResting", "[stp][tif]") {
     MatchingEngine eng(StpPolicy::CancelResting);
-    eng.submit(Limit(1, 7, Side::Sell, 100, 5));   // own — would be cancelled, not filled
+    eng.submit(Limit(1, 7, Side::Sell, 100, 5));   // own order: cancelled, not filled
     eng.submit(Limit(2, 9, Side::Sell, 100, 5));
 
     // 8 > 5 reachable from other clients → reject.

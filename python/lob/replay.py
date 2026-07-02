@@ -1,13 +1,13 @@
 """Replay order flow through the matching engine and record signals.
 
 Events are plain dataclasses (:class:`Submit` / :class:`Cancel`), so any
-source — historical data, a synthetic generator, live feed capture — just
+source (historical data, a synthetic generator, live feed capture) just
 needs to produce them. :func:`replay` applies each event and records a
 snapshot row: best quotes, mid, spread, OBI, and cumulative volume delta.
 
-CVD (cumulative volume delta) needs the aggressor side of each trade, which
-the Trade object deliberately doesn't carry — the replayer knows it, because
-it submitted the order. Buy-side aggression adds, sell-side subtracts.
+CVD needs the aggressor side of each trade. The Trade object doesn't carry
+it, but the replayer knows it anyway because it submitted the order.
+Buy-side aggression adds, sell-side subtracts.
 """
 
 from __future__ import annotations

@@ -2,7 +2,7 @@
 
 Conventions: ``returns`` are simple per-period returns; ``equity`` is a
 cumulative equity/price curve. Annualization uses ``periods_per_year``
-(252 for daily bars — pass the real figure for intraday data).
+(252 for daily bars; pass the real figure for intraday data).
 """
 
 from __future__ import annotations

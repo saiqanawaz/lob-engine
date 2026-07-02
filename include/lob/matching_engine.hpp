@@ -38,8 +38,8 @@ public:
     CancelResult cancel(OrderId id);
 
     // Exchange-standard amend semantics: a quantity decrease at the same
-    // price is done in place and keeps time priority; a price change or
-    // quantity increase is a cancel+replace — it loses priority and
+    // price is done in place and keeps time priority. A price change or
+    // quantity increase is a cancel+replace, so it loses priority and
     // re-matches like a new order.
     ModifyResult modify(OrderId id, Price new_price, Quantity new_qty);
 

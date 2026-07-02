@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>lob-engine — a C++ limit order book, live in your browser</title>
+  <title>lob-engine: a C++ limit order book, live in your browser</title>
   <meta name="description" content="Price-time priority matching engine in C++20, compiled to WebAssembly. The demo runs the real engine.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -25,8 +25,8 @@
       <p class="eyebrow">C++20 &middot; WebAssembly &middot; price&ndash;time priority</p>
       <h1>A limit order book engine,<br><em>live in your browser.</em></h1>
       <p class="sub">
-        The ladder below isn't a mock of the engine — it <strong>is</strong> the engine.
-        The same C++ that clocks ~14M&nbsp;ops/s natively, compiled to WebAssembly.
+        The ladder below runs the actual engine: the same C++ that clocks
+        ~14M&nbsp;ops/s natively, compiled to WebAssembly.
         No frameworks, no server, one 100&nbsp;KB module.
       </p>
       <div class="chips">
@@ -116,7 +116,7 @@
             <div class="ic"><b>0.54</b><span>5s</span></div>
             <div class="ic"><b>0.45</b><span>10s</span></div>
           </div>
-          <p class="footnote">Top-minus-bottom decile: +2.65 bps over 5s &mdash; clears the half-spread, loses to taker fees. A microstructure observation, honestly framed, not a strategy. Full caveats in the notebook.</p>
+          <p class="footnote">Top-minus-bottom decile: +2.65 bps over 5s. Clears the half-spread, loses to taker fees, so it is a microstructure observation rather than a strategy. Full caveats in the notebook.</p>
         </div>
         <div class="glass card">
           <div class="card-head"><h2>Engine benchmarks</h2></div>

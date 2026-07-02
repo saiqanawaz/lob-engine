@@ -80,7 +80,7 @@ inline std::vector<Op> make_mixed(std::size_t n, unsigned seed) {
             const std::size_t k = pick(rng);
             Op op;
             op.kind   = Op::Kind::Cancel;
-            op.target = live[k];  // may already be filled — a realistic miss
+            op.target = live[k];  // may already be filled, which is a realistic miss
             live[k] = live.back();
             live.pop_back();
             ops.push_back(op);

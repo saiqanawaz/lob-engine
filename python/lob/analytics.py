@@ -1,7 +1,7 @@
 """Market microstructure signals computed from aggregated book depth.
 
-All functions take depth as ``(price, quantity)`` pairs sorted best-first —
-exactly the shape returned by :meth:`lob.MatchingEngine.depth`. Prices are
+All functions take depth as ``(price, quantity)`` pairs sorted best-first,
+the shape returned by :meth:`lob.MatchingEngine.depth`. Prices are
 integer ticks; outputs that mix price levels (mid, microprice) are floats.
 
 Signals return ``None`` when a side of the book is empty rather than raising:
@@ -32,8 +32,8 @@ def spread(bids: Depth, asks: Depth) -> Optional[int]:
 def microprice(bids: Depth, asks: Depth) -> Optional[float]:
     """Size-weighted mid: leans toward the thinner side's price.
 
-    ``(ask_px * bid_qty + bid_px * ask_qty) / (bid_qty + ask_qty)`` — a
-    common short-horizon fair-value estimate: heavy bids push it up.
+    ``(ask_px * bid_qty + bid_px * ask_qty) / (bid_qty + ask_qty)``, a
+    common short-horizon fair-value estimate. Heavy bids push it up.
     """
     if not bids or not asks:
         return None

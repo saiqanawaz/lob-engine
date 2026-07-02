@@ -1,7 +1,7 @@
 """Binance market-data collector: depth diffs + trades to JSONL.
 
 Uses the public market-data endpoints (no API key). binance.com geo-blocks
-some regions (including the US) — ``--us`` switches to Binance.US.
+some regions, including the US; ``--us`` switches to Binance.US.
 
 Capture preserves raw fidelity: prices and quantities stay strings exactly
 as Binance sends them; tick conversion happens at replay time. The file
@@ -12,9 +12,9 @@ contains one JSON record per line:
     {"type": "snapshot", "last_update_id", "bids", "asks"}
     {"type": "trade", "ts", "price", "qty", "buyer_maker", "trade_id"}
 
-The REST snapshot is fetched after the first depth diff arrives, so the
-update-id ranges bracket it — exactly what the documented Binance book-sync
-algorithm (implemented in :mod:`lob.ingest.l2`) needs.
+The REST snapshot is fetched after the first depth diff arrives so that the
+update-id ranges bracket it, which is what the Binance book-sync algorithm
+(implemented in :mod:`lob.ingest.l2`) requires.
 
 Usage::
 

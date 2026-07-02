@@ -10,9 +10,9 @@ dropped, the first applied event must bracket ``last_update_id + 1``, and
 every later event must be contiguous with the previous one (a gap raises
 :class:`L2SyncError` unless ``strict=False``).
 
-Trades are deliberately NOT matched through the engine — depth diffs are
-already post-trade state, so matching them would double-count. The trade
-stream instead drives CVD via the ``buyer_maker`` aggressor flag.
+Trades are not matched through the engine: depth diffs are already
+post-trade state, so matching them would double-count. The trade stream
+instead drives CVD via the ``buyer_maker`` aggressor flag.
 """
 
 from __future__ import annotations
@@ -85,8 +85,8 @@ class _BookBuilder:
             return
 
         # New level. A bid at/above the best ask (or vice versa) would match
-        # instead of resting — a transient artifact of applying one side of
-        # a diff before the other has caught up. Skip and count it.
+        # instead of resting. This is a transient artifact of applying one
+        # side of a diff before the other has caught up; skip and count it.
         if side == Side.Buy:
             opposite = self.eng.best_ask
             if opposite is not None and pt >= opposite[0]:

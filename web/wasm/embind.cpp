@@ -1,6 +1,6 @@
-// Embind wrapper: the same C++ engine the tests and benchmarks run,
-// compiled to WebAssembly for the browser demo. No TypeScript port,
-// no reimplementation — one matching engine everywhere.
+// Embind wrapper around the engine for the browser demo. The site loads
+// this as a single-file WASM module, so the ladder runs the same code
+// as the native tests and benchmarks.
 
 #include <emscripten/bind.h>
 #include <emscripten/val.h>
