@@ -3,6 +3,9 @@
 A price-time-priority limit order book and matching engine in C++20, with a
 Python SDK built on pybind11.
 
+**Live demo: [lob-engine.pages.dev](https://lob-engine.pages.dev)** — the
+same engine compiled to WebAssembly, matching orders in your browser.
+
 ## Highlights
 
 - **Matching semantics that mirror real exchanges**: executions at the maker's
@@ -106,8 +109,12 @@ bash web/wasm/build.sh                       # rebuild web/js/lob-engine.js (nee
 python -m http.server 8123 --directory web   # then open http://localhost:8123
 ```
 
-The built module is committed, so the site deploys as-is to any static host
-(GitHub Pages, Cloudflare Pages, Netlify).
+The built module is committed, so the site deploys as-is to any static host.
+Production runs on Cloudflare Pages; redeploy with:
+
+```bash
+npx wrangler pages deploy web --project-name lob-engine --branch main
+```
 
 ## Layout
 
