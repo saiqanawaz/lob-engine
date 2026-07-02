@@ -1,0 +1,29 @@
+[build-system]
+requires = ["scikit-build-core>=0.9"]
+build-backend = "scikit_build_core.build"
+
+[project]
+name = "lob-engine"
+version = "0.1.0"
+description = "C++ price-time-priority limit order book matching engine with Python bindings"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [{ name = "Saiqa Nawaz", email = "snawaz3@asu.edu" }]
+keywords = ["limit-order-book", "matching-engine", "market-microstructure", "hft"]
+
+[project.optional-dependencies]
+test = ["pytest>=7"]
+
+[tool.scikit-build]
+minimum-version = "0.9"
+cmake.version = ">=3.20"
+wheel.packages = ["python/lob"]
+
+[tool.scikit-build.cmake.define]
+LOB_BUILD_TESTS = "OFF"
+LOB_BUILD_BENCHMARKS = "OFF"
+LOB_BUILD_PYTHON = "ON"
+
+[tool.pytest.ini_options]
+testpaths = ["python/tests"]

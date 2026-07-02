@@ -28,7 +28,7 @@ DepthSide depth_side(const LevelMap& levels, std::size_t max_levels) {
 
 }  // namespace
 
-PYBIND11_MODULE(lob_engine, m) {
+PYBIND11_MODULE(_core, m) {
     m.doc() = "C++ price-time-priority limit order book matching engine";
 
     py::enum_<Side>(m, "Side")
