@@ -23,12 +23,28 @@
 html { scroll-behavior: smooth; }
 
 body {
-  background: linear-gradient(165deg, #f2f3fa 0%, #e9ecf6 55%, #eef0f7 100%);
+  background: linear-gradient(160deg, #edeffb 0%, #e7ebf9 50%, #ebf3f3 100%);
   color: var(--txt);
   font: 15px/1.65 var(--sans);
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
   min-height: 100vh;
+}
+
+/* iridescent light field the glass panels refract; plain radial
+   gradients are soft on their own, so no blur filter is needed */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background:
+    radial-gradient(55% 60% at 12% 18%, rgba(160, 172, 255, 0.55), transparent 70%),
+    radial-gradient(50% 55% at 88% 28%, rgba(255, 190, 220, 0.45), transparent 70%),
+    radial-gradient(55% 60% at 70% 78%, rgba(150, 235, 210, 0.45), transparent 70%),
+    radial-gradient(45% 50% at 25% 85%, rgba(255, 226, 175, 0.4), transparent 70%),
+    radial-gradient(40% 45% at 50% 45%, rgba(205, 170, 255, 0.3), transparent 70%);
+  pointer-events: none;
 }
 
 .mono { font-family: var(--mono); }
@@ -38,18 +54,19 @@ body {
 .orb {
   position: fixed;
   border-radius: 50%;
-  filter: blur(90px);
   pointer-events: none;
   z-index: 0;
-  opacity: 0.5;
+  opacity: 0.6;
 }
 .orb-a { width: 560px; height: 560px; top: -180px; left: -120px;
-         background: radial-gradient(circle, rgba(120, 126, 255, 0.3), transparent 65%); }
+         background: radial-gradient(circle, rgba(110, 120, 255, 0.5), transparent 65%); }
 .orb-b { width: 480px; height: 480px; top: 340px; right: -160px;
-         background: radial-gradient(circle, rgba(45, 212, 191, 0.24), transparent 65%); }
+         background: radial-gradient(circle, rgba(40, 205, 180, 0.42), transparent 65%); }
 .orb-c { width: 640px; height: 640px; bottom: -260px; left: 30%;
-         background: radial-gradient(circle, rgba(196, 160, 255, 0.22), transparent 65%); }
+         background: radial-gradient(circle, rgba(190, 145, 255, 0.4), transparent 65%); }
 
+/* static: animating these forces every backdrop-filtered panel above
+   them to re-blur per frame, which is too expensive */
 .ribbon {
   position: fixed;
   left: -20%;
@@ -62,66 +79,60 @@ body {
 }
 .ribbon-a {
   top: 10%;
-  opacity: 0.5;
+  opacity: 0.8;
   background: linear-gradient(90deg,
     transparent,
-    rgba(126, 165, 255, 0.32) 18%,
-    rgba(196, 148, 255, 0.3) 42%,
-    rgba(120, 232, 214, 0.28) 68%,
-    rgba(255, 196, 150, 0.2) 86%,
+    rgba(126, 165, 255, 0.5) 18%,
+    rgba(196, 148, 255, 0.45) 42%,
+    rgba(110, 228, 208, 0.42) 68%,
+    rgba(255, 190, 140, 0.32) 86%,
     transparent);
-  animation: ribbon-drift-a 46s ease-in-out infinite alternate;
+  transform: rotate(-7deg);
 }
 .ribbon-b {
   top: 52%;
   height: 260px;
-  opacity: 0.35;
+  opacity: 0.6;
   background: linear-gradient(90deg,
     transparent,
-    rgba(255, 170, 200, 0.26) 22%,
-    rgba(150, 180, 255, 0.28) 50%,
-    rgba(140, 235, 200, 0.24) 78%,
+    rgba(255, 160, 195, 0.4) 22%,
+    rgba(145, 175, 255, 0.45) 50%,
+    rgba(130, 230, 195, 0.36) 78%,
     transparent);
-  animation: ribbon-drift-b 58s ease-in-out infinite alternate;
-}
-@keyframes ribbon-drift-a {
-  from { transform: rotate(-8deg) translate(-3%, 0); }
-  to   { transform: rotate(-5deg) translate(3%, 26px); }
-}
-@keyframes ribbon-drift-b {
-  from { transform: rotate(6deg) translate(2%, 0); }
-  to   { transform: rotate(4deg) translate(-3%, -22px); }
+  transform: rotate(5deg);
 }
 
 /* ── glass: curved specular sheen + prismatic refraction edge ───────── */
 .glass {
   position: relative;
   overflow: hidden;
-  background: var(--panel);
-  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.38);
+  border: 1px solid rgba(255, 255, 255, 0.55);
   border-radius: var(--radius);
-  backdrop-filter: blur(22px) saturate(170%);
-  -webkit-backdrop-filter: blur(22px) saturate(170%);
-  box-shadow: 0 14px 40px rgba(45, 55, 100, 0.12),
-              inset 0 1px 0 rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(26px) saturate(185%);
+  -webkit-backdrop-filter: blur(26px) saturate(185%);
+  box-shadow: 0 18px 48px rgba(55, 65, 130, 0.16),
+              inset 0 1px 0 rgba(255, 255, 255, 0.8);
 }
 .glass > * { position: relative; z-index: 1; }
 
-/* the curved top-light reflection */
+/* glancing diagonal highlight, with a faint counter-glint bottom right */
 .glass::before {
   content: "";
   position: absolute;
   inset: 0;
   z-index: 0;
   border-radius: inherit;
-  background: radial-gradient(130% 70% at 50% -22%,
-    rgba(255, 255, 255, 0.72),
-    rgba(255, 255, 255, 0.24) 55%,
-    rgba(255, 255, 255, 0) 63%);
+  background: linear-gradient(118deg,
+    rgba(255, 255, 255, 0.5) 0%,
+    rgba(255, 255, 255, 0.12) 18%,
+    rgba(255, 255, 255, 0) 34%,
+    rgba(255, 255, 255, 0) 76%,
+    rgba(255, 255, 255, 0.22) 100%);
   pointer-events: none;
 }
 
-/* faint spectral dispersion along the edge */
+/* spectral dispersion along the edge */
 .glass::after {
   content: "";
   position: absolute;
@@ -130,16 +141,16 @@ body {
   border-radius: inherit;
   padding: 1px;
   background: linear-gradient(118deg,
-    rgba(255, 140, 190, 0.4),
-    rgba(140, 170, 255, 0.45) 28%,
-    rgba(130, 240, 215, 0.4) 55%,
-    rgba(255, 220, 150, 0.32) 78%,
-    rgba(200, 140, 255, 0.4));
+    rgba(255, 130, 185, 0.55),
+    rgba(130, 165, 255, 0.6) 28%,
+    rgba(115, 235, 210, 0.55) 55%,
+    rgba(255, 210, 140, 0.45) 78%,
+    rgba(195, 130, 255, 0.55));
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   mask-composite: exclude;
-  opacity: 0.55;
+  opacity: 0.8;
   pointer-events: none;
 }
 
@@ -182,16 +193,16 @@ main { position: relative; z-index: 1; max-width: 1120px; margin: 0 auto; paddin
 .chip {
   display: flex; align-items: baseline; gap: 8px;
   padding: 10px 18px; border-radius: 999px;
-  background-color: var(--panel);
+  background-color: rgba(255, 255, 255, 0.35);
   background-image: linear-gradient(180deg,
-    rgba(255, 255, 255, 0.85),
-    rgba(255, 255, 255, 0.25) 52%,
-    rgba(255, 255, 255, 0.05));
-  border: 1px solid var(--border);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  box-shadow: 0 6px 18px rgba(45, 55, 100, 0.08),
-              inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    rgba(255, 255, 255, 0.6),
+    rgba(255, 255, 255, 0.08) 55%,
+    rgba(255, 255, 255, 0));
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(16px) saturate(170%);
+  -webkit-backdrop-filter: blur(16px) saturate(170%);
+  box-shadow: 0 8px 22px rgba(55, 65, 130, 0.12),
+              inset 0 1px 0 rgba(255, 255, 255, 0.85);
 }
 .chip b { font-family: var(--mono); font-size: 15px; color: var(--txt); }
 .chip span { font-size: 12.5px; color: var(--muted); }
@@ -218,7 +229,7 @@ main { position: relative; z-index: 1; max-width: 1120px; margin: 0 auto; paddin
 
 input, select {
   width: 100%; color: var(--txt);
-  background: rgba(255, 255, 255, 0.65);
+  background: rgba(255, 255, 255, 0.5);
   border: 1px solid var(--border); border-radius: 10px;
   padding: 9px 12px; font: 500 13px var(--mono);
   outline: none; appearance: none;
