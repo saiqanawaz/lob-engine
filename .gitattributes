@@ -1,3 +1,8 @@
 * text=auto eol=lf
 *.png binary
 *.jpg binary
+
+*.ipynb linguist-documentation
+web/js/lob-engine.js linguist-generated
+data/*.jsonl linguist-generated
+benchmarks/results/* linguist-generated

@@ -1,5 +1,7 @@
 # lob-engine
 
+[![CI](https://github.com/saiqanawaz/lob-engine/actions/workflows/ci.yml/badge.svg)](https://github.com/saiqanawaz/lob-engine/actions/workflows/ci.yml)
+
 A price-time-priority limit order book and matching engine in C++20, with a
 Python SDK built on pybind11.
 
@@ -18,6 +20,31 @@ is compiled to WebAssembly and matches orders in the browser.
 - Prices and quantities are integer ticks. There is no floating point
   inside the engine.
 - Google Benchmark suite and a per-operation latency percentile tool.
+- 65 tests in CI: 33 C++ (Catch2) covering book mechanics, matching,
+  time-in-force, and amend/STP semantics, plus 32 Python tests for the
+  bindings, analytics, replay, and ingestion layers.
+
+## Design
+
+Each side of the book is a `std::map` from price to price level (bids
+sorted descending, asks ascending), so the best level is `begin()` and
+creating a level is O(log n) in the number of levels. A price level holds
+its resting orders as an intrusive doubly-linked FIFO: the prev/next
+pointers live in the order struct itself, so there is no separate list-node
+allocation and unlinking an order is O(1). Order nodes come from a pool
+(`std::deque` plus a free list) and never move once allocated, which keeps
+raw pointers valid while an order rests. An `unordered_map` from order id
+to node gives cancel and modify an O(1) lookup; cancels dominate real
+message flow, which is why that path gets the constant-time treatment
+rather than insert. Matching walks the opposite side from `begin()`,
+level by level, FIFO within each level.
+
+`OrderBook` is pure storage and never trades; all matching semantics
+(crossing, time-in-force, self-trade prevention, amend rules) live in
+`MatchingEngine`. The map-based level container is the deliberate baseline:
+it is simple to reason about and the benchmark suite exists to justify any
+replacement (a flat sorted vector or price-indexed array would improve
+locality near the touch) with measurements rather than folklore.
 
 ## Performance
 
