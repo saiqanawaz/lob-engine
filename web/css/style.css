@@ -34,31 +34,113 @@ body {
 .mono { font-family: var(--mono); }
 .muted { color: var(--muted); font-size: 13px; }
 
-/* ── ambient orbs ───────────────────────────────────────────────────── */
+/* ── ambient light: orbs + drifting spectral ribbons ────────────────── */
 .orb {
   position: fixed;
   border-radius: 50%;
   filter: blur(90px);
   pointer-events: none;
   z-index: 0;
-  opacity: 0.6;
+  opacity: 0.5;
 }
 .orb-a { width: 560px; height: 560px; top: -180px; left: -120px;
-         background: radial-gradient(circle, rgba(120, 126, 255, 0.35), transparent 65%); }
+         background: radial-gradient(circle, rgba(120, 126, 255, 0.3), transparent 65%); }
 .orb-b { width: 480px; height: 480px; top: 340px; right: -160px;
-         background: radial-gradient(circle, rgba(45, 212, 191, 0.28), transparent 65%); }
+         background: radial-gradient(circle, rgba(45, 212, 191, 0.24), transparent 65%); }
 .orb-c { width: 640px; height: 640px; bottom: -260px; left: 30%;
-         background: radial-gradient(circle, rgba(196, 160, 255, 0.25), transparent 65%); }
+         background: radial-gradient(circle, rgba(196, 160, 255, 0.22), transparent 65%); }
 
-/* ── glass ──────────────────────────────────────────────────────────── */
+.ribbon {
+  position: fixed;
+  left: -20%;
+  width: 140%;
+  height: 320px;
+  border-radius: 50%;
+  filter: blur(42px);
+  pointer-events: none;
+  z-index: 0;
+}
+.ribbon-a {
+  top: 10%;
+  opacity: 0.5;
+  background: linear-gradient(90deg,
+    transparent,
+    rgba(126, 165, 255, 0.32) 18%,
+    rgba(196, 148, 255, 0.3) 42%,
+    rgba(120, 232, 214, 0.28) 68%,
+    rgba(255, 196, 150, 0.2) 86%,
+    transparent);
+  animation: ribbon-drift-a 46s ease-in-out infinite alternate;
+}
+.ribbon-b {
+  top: 52%;
+  height: 260px;
+  opacity: 0.35;
+  background: linear-gradient(90deg,
+    transparent,
+    rgba(255, 170, 200, 0.26) 22%,
+    rgba(150, 180, 255, 0.28) 50%,
+    rgba(140, 235, 200, 0.24) 78%,
+    transparent);
+  animation: ribbon-drift-b 58s ease-in-out infinite alternate;
+}
+@keyframes ribbon-drift-a {
+  from { transform: rotate(-8deg) translate(-3%, 0); }
+  to   { transform: rotate(-5deg) translate(3%, 26px); }
+}
+@keyframes ribbon-drift-b {
+  from { transform: rotate(6deg) translate(2%, 0); }
+  to   { transform: rotate(4deg) translate(-3%, -22px); }
+}
+
+/* ── glass: curved specular sheen + prismatic refraction edge ───────── */
 .glass {
+  position: relative;
+  overflow: hidden;
   background: var(--panel);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  backdrop-filter: blur(22px) saturate(160%);
-  -webkit-backdrop-filter: blur(22px) saturate(160%);
-  box-shadow: 0 14px 40px rgba(45, 55, 100, 0.1),
-              inset 0 1px 0 rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(22px) saturate(170%);
+  -webkit-backdrop-filter: blur(22px) saturate(170%);
+  box-shadow: 0 14px 40px rgba(45, 55, 100, 0.12),
+              inset 0 1px 0 rgba(255, 255, 255, 0.75);
+}
+.glass > * { position: relative; z-index: 1; }
+
+/* the curved top-light reflection */
+.glass::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  background: radial-gradient(130% 70% at 50% -22%,
+    rgba(255, 255, 255, 0.72),
+    rgba(255, 255, 255, 0.24) 55%,
+    rgba(255, 255, 255, 0) 63%);
+  pointer-events: none;
+}
+
+/* faint spectral dispersion along the edge */
+.glass::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(118deg,
+    rgba(255, 140, 190, 0.4),
+    rgba(140, 170, 255, 0.45) 28%,
+    rgba(130, 240, 215, 0.4) 55%,
+    rgba(255, 220, 150, 0.32) 78%,
+    rgba(200, 140, 255, 0.4));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  opacity: 0.55;
+  pointer-events: none;
 }
 
 /* ── layout ─────────────────────────────────────────────────────────── */
@@ -100,10 +182,16 @@ main { position: relative; z-index: 1; max-width: 1120px; margin: 0 auto; paddin
 .chip {
   display: flex; align-items: baseline; gap: 8px;
   padding: 10px 18px; border-radius: 999px;
-  background: var(--panel); border: 1px solid var(--border);
+  background-color: var(--panel);
+  background-image: linear-gradient(180deg,
+    rgba(255, 255, 255, 0.85),
+    rgba(255, 255, 255, 0.25) 52%,
+    rgba(255, 255, 255, 0.05));
+  border: 1px solid var(--border);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
-  box-shadow: 0 6px 18px rgba(45, 55, 100, 0.07);
+  box-shadow: 0 6px 18px rgba(45, 55, 100, 0.08),
+              inset 0 1px 0 rgba(255, 255, 255, 0.9);
 }
 .chip b { font-family: var(--mono); font-size: 15px; color: var(--txt); }
 .chip span { font-size: 12.5px; color: var(--muted); }
@@ -111,14 +199,20 @@ main { position: relative; z-index: 1; max-width: 1120px; margin: 0 auto; paddin
 /* ── buttons & inputs ───────────────────────────────────────────────── */
 .btn {
   font: 600 13.5px/1 var(--sans); color: var(--accent);
-  background: rgba(80, 87, 216, 0.1);
+  background-color: rgba(80, 87, 216, 0.1);
+  background-image: linear-gradient(180deg,
+    rgba(255, 255, 255, 0.65),
+    rgba(255, 255, 255, 0.1) 50%,
+    rgba(255, 255, 255, 0) 52%);
   border: 1px solid rgba(80, 87, 216, 0.3);
   border-radius: 10px; padding: 10px 16px; cursor: pointer;
-  text-decoration: none; transition: background 0.15s, border-color 0.15s;
+  text-decoration: none;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  transition: background-color 0.15s, border-color 0.15s;
 }
-.btn:hover { background: rgba(80, 87, 216, 0.18); }
-.btn.ghost { background: var(--panel); border-color: var(--border); color: var(--txt); }
-.btn.ghost:hover { background: var(--panel-strong); }
+.btn:hover { background-color: rgba(80, 87, 216, 0.18); }
+.btn.ghost { background-color: var(--panel); border-color: var(--border); color: var(--txt); }
+.btn.ghost:hover { background-color: var(--panel-strong); }
 .btn.small { padding: 7px 13px; font-size: 12.5px; }
 .btn.wide { width: 100%; padding: 11px; margin-top: 10px; }
 
